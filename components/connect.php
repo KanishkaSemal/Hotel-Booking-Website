@@ -1,11 +1,16 @@
 <?php
 
-   $db_name = 'mysql:host=localhost;sbname=hotel_db';
-   $db_user_name = 'root';
-   $db_user_pass = '';
+$host = 'localhost';
+$dbUser = 'root'; // Replace with your MySQL username
+$dbPass = ''; // Replace with your MySQL password
+$dbName = 'hotel_db';
 
-   $conn = new PDO($db_name, $db_user_name, $db_user_pass);
+$conn = new mysqli($host, $dbUser, $dbPass, $dbName);
 
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
    function create_unique_id(){
       $str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
