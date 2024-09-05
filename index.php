@@ -2,8 +2,45 @@
 
 include 'components/connect.php';
 
-echo create_unique_id()
+if(isset($_COOKIE['user_id'])){
+   $user_id = $_COOKIE['user_id'];
+}else{
+   setcookie('user_id', create_unique_id(), time() + 60*60*24*30, '/');
+   header('location:index.php'); // Corrected line with semicolon
+   exit; // Ensure the script stops after redirection
+}
+
+if(isset($_POST['check'])){
+
+   $check_in = $_POST['check_in'];
+   $check_in = filter_var($check_in, FILTER_SANITIZE_STRING);
+
+   $total_rooms = 0;
+
+   // Prepare and execute the query using mysqli
+   $check_bookings = $conn->prepare("SELECT rooms FROM bookings WHERE check_in = ?");
+   $check_bookings->bind_param("s", $check_in); // "s" is for string
+   $check_bookings->execute();
+   $result = $check_bookings->get_result();
+
+   // Fetch the results using mysqli
+   while($fetch_bookings = $result->fetch_assoc()){
+      $total_rooms += $fetch_bookings['rooms'];
+   }
+
+   // Check if the hotel has a total of 30 rooms
+   if($total_rooms >= 30){
+      $warning_msg[] = 'Rooms are not available';
+   }else{
+      $success_msg[] = 'Rooms are available';
+   }
+
+}
+
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
